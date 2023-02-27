@@ -1,0 +1,10 @@
+from whatsfly import WhatsApp
+
+"""
+
+basic usages
+
+"""
+whatsapp = WhatsApp()
+
+response = whatsapp.send_messages(message= "Hello World!", phone="6283139750000")
