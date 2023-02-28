@@ -21,7 +21,7 @@ Install WhatsFly with pip
   pip install whatsfly
 ```
 
-## *except for linux 32bit, plese compile whatsfly/dependencies/main.go based on your machine first*
+## *except for linux 32bit, please first compile whatsfly/dependencies/main.go based on your machine*
 
 
 
