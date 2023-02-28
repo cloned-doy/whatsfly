@@ -2,3 +2,4 @@
 /dist
 /whatsfly/whatsfly.egg-info
 /whatsfly.egg-info
+# /whatsfly/dependencies/example*
