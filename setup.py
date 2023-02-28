@@ -17,7 +17,7 @@ for directory in directories:
 
 setup(
     name='whatsfly',
-    version='0.0.0',
+    version='0.0.1',
     license='MIT',
     author="Doy Bachtiar",
     author_email='blbblb669@gmail.com',

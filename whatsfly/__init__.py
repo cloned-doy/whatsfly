@@ -13,6 +13,6 @@ import os
 import sys
 import logging
 
-from whatsapp import WhatsApp
+from .whatsapp import WhatsApp
 
 LOGGER = logging.getLogger()

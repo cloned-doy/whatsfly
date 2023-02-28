@@ -21,16 +21,22 @@ else:
         file_ext = '-arm64.so'
     elif "x86" in machine():
         file_ext = '-x86.so'
+    elif "i686" in machine():
+    	file_ext = 'i386.so'
     else:
         file_ext = '-amd64.so'
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
-library = ctypes.cdll.LoadLibrary(f'{root_dir}/dependencies/whatsmeow{file_ext}')
 
-# extract the exposed request function from the shared package
+# Load the shared library
+lib = ctypes.CDLL(f'{root_dir}/dependencies/libwapp.so')
 
-"""
-request = library.request
-request.argtypes = [ctypes.c_char_p]
-request.restype = ctypes.c_char_p
-"""
+# Define the Connect function
+ClientConnect = lib.Connect
+ClientConnect.argtypes = []
+ClientConnect.restype = None
+
+# Define the argument and return types of the SendMessage function
+SendMessage = lib.SendMessage
+SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+SendMessage.restype = ctypes.c_int

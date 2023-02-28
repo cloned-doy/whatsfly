@@ -1,6 +1,18 @@
 /.vs
 /test
+/build
+/database
+/examples/database
+/examples/test*
 /dist
 /whatsfly/whatsfly.egg-info
 /whatsfly.egg-info
 # /whatsfly/dependencies/example*
+__init__.py
+
+/whatsfly/__pycache__
+/whatsfly/dependencies/test*
+
+
+whatsfly/__init__.pyc
+whatsfly/dependencies/wapp.db
