@@ -60,11 +60,6 @@ type DefaultKeyBase struct {
 	dir  string
 }
 
-type StdSignature struct {
-	crypto.PubKey `json:"pub_key"`
-	Signature     []byte `json:"signature"`
-}
-
 func NewDefaultKeyBase(root string) DefaultKeyBase {
 	initDefaultKeyBaseConfig()
 	return DefaultKeyBase{

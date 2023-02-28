@@ -1,4 +1,4 @@
-package main
+package whatsfly
 
 /*
 #include <stdlib.h>
@@ -23,12 +23,28 @@ import (
 	waLog "go.mau.fi/whatsmeow/util/log"
 	"google.golang.org/protobuf/proto"
 	_ "modernc.org/sqlite"
-	gogpt "github.com/sashabaranov/go-gpt3"
+	// gogpt "github.com/sashabaranov/go-gpt3"
 )
+
+
+var _ Client = DefaultClient{}
+
+type Client interface {
+	SendMessage(message string, number string) string
+	CheckIncomingMessage() string
+}
 
 type MyClient struct {
 	WAClient       *whatsmeow.Client
-	eventHandlerID uint32
+	// eventHandlerID uint32
+	ClientPhone string
+}
+
+func NewMyClient(phone string) MyClient {
+	return MyClient{
+		*whatsmeow.Client,
+		phone,
+	}
 }
 
 func (mycli *MyClient) register() {

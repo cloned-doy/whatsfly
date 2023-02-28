@@ -8,15 +8,15 @@ import (
 	"github.com/coinexchain/polarbear/keybase"
 )
 
-var ApiForPython WalletForPython
+var Whatsfly WhatsflyClientPython
 
-type WalletForPython struct {
-	keybase.KeyBase
+type WhatsflyClientPython struct {
+	whatsfly.DefaultClient
 }
 
-//export BearInit
-func BearInit(root *C.char) {
-	ApiForPython.KeyBase = keybase.NewDefaultKeyBase(C.GoString(root))
+//export ClientInit
+func ClientInit(root *C.char) {
+	Whatsfly.DefaultClient = whatsfly.NewDefaultClient(C.GoString(root))
 }
 
 //export CreateKey
@@ -28,3 +28,4 @@ func CreateKey(name, password, bip39Passphrase *C.char, account, index C.uint) *
 //export DeleteKey
 func DeleteKey(name, password *C.char) *C.char {
 	return C.CString(ApiForPython.DeleteKey(C.GoString(name), C.GoString(password)))
+}
