@@ -3,7 +3,7 @@
 
 ### *current version 0.0.1 works in linux 32bit only*
 
-WhatsApp web wrapper in Python. No selenium or gecko web driver needed. 
+WhatsApp web wrapper in Python. No selenium nor gecko web driver needed. 
 
 setting up browser driver are tricky for python newcomers, and thus it makes your code soo laggy.
 
