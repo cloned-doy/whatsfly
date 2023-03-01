@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/mdp/qrterminal/v3 v3.0.0
-	github.com/sashabaranov/go-gpt3 v1.2.1
 	go.mau.fi/whatsmeow v0.0.0-20230226124255-e5c8f3c95d78
 	google.golang.org/protobuf v1.28.1
 	modernc.org/sqlite v1.21.0
