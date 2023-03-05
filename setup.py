@@ -10,11 +10,6 @@ for directory in directories:
     files = glob.glob(directory+'*')
     data_files.append(('whatsfly/dependencies', files))
 
-# about = {}
-# here = os.path.abspath(os.path.dirname(__file__))
-# with open(os.path.join(here, "whatsfly", "__version__.py"), "r", "utf-8") as f:
-#     exec(f.read(), about)
-
 setup(
     name='whatsfly',
     version='0.0.1',
@@ -47,4 +42,3 @@ setup(
         "Topic :: Software Development :: Libraries",
     ]
 )
-

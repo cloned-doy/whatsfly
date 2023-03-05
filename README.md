@@ -1,7 +1,8 @@
 # WhatsFly
 ## Just run and have fun. Just try and go fly. 
 
-### *current version 0.0.1 works in linux 32bit only*
+> ## Support my work
+> Make a pull request and fix my bad code.
 
 WhatsApp web wrapper in Python. No selenium nor gecko web driver needed. 
 
@@ -21,9 +22,12 @@ Install WhatsFly with pip
   pip install whatsfly
 ```
 
-## *except for linux 32bit, please first compile whatsfly/dependencies/main.go based on your machine*
+or :
+```bash
+  pip3 install --upgrade whatsfly
+```
 
-
+### *linux arm64 and macOS machines are not supported yet*
 
 
 ## Usage/Examples

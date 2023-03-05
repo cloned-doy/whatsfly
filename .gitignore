@@ -10,9 +10,18 @@
 # /whatsfly/dependencies/example*
 __init__.py
 
+# excluding cache and test files
 /whatsfly/__pycache__
 /whatsfly/dependencies/test*
 
-
+# excluding build *.h files
 whatsfly/__init__.pyc
 whatsfly/dependencies/wapp.db
+whatsfly/dependencies/whatsmeow-linux-386.h
+whatsfly/dependencies/whatsmeow-linux-686.h
+whatsfly/dependencies/whatsmeow-linux-amd64.h
+whatsfly/dependencies/whatsmeow-linux-arm64.h
+whatsfly/dependencies/whatsmeow-windows-32.h
+whatsfly/dependencies/whatsmeow-windows-64.h
+whatsfly/dependencies/whatsmeow-darwin-amd64.h
+whatsfly/dependencies/whatsmeow-darwin-arm64.h

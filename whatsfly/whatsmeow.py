@@ -1,10 +1,6 @@
 """
-import whatsmeow c shared here
-
-broken code
-
-will be fixed soon
-
+importing c shared whatsmeow library based on your machine
+broken code will be fixed soon
 """
 
 from sys import platform
@@ -12,6 +8,7 @@ from platform import machine
 import ctypes
 import os
 
+# Load the shared library
 if platform == 'darwin':
     file_ext = '-darwin-arm64.dylib' if machine() == "arm64" else '-darwin-amd64.dylib'
 elif platform in ('win32', 'cygwin'):
@@ -24,17 +21,11 @@ else:
         file_ext = '-linux-686.so'
     elif machine.startswith("i386"):
         file_ext = '-linux-386.so'
-    elif machine.startswith("armv7"):
-        file_ext = '-linux-armhf.so'
-    elif machine.startswith("armv8"):
-        file_ext = '-linux-armv8.so'
     else:
         file_ext = '-linux-amd64.so'
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
-lib = ctypes.CDLL(f'{root_dir}/dependencies/dist/whatsmeow{file_ext}')
-# Load the shared library
-# lib = ctypes.CDLL(f'{root_dir}/dependencies/libwapp.so')
+lib = ctypes.CDLL(f'{root_dir}/dependencies/whatsmeow{file_ext}')
 
 # Define the Connect function
 ClientConnect = lib.Connect
