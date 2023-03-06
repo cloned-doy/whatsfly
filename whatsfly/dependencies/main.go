@@ -16,7 +16,7 @@ import (
     "go.mau.fi/whatsmeow/types"
     waLog "go.mau.fi/whatsmeow/util/log"
     "google.golang.org/protobuf/proto"
-    // _ "modernc.org/sqlite"
+    _ "modernc.org/sqlite"
     // sqlite3 "github.com/mattn/go-sqlite3"
 
 )
@@ -36,7 +36,7 @@ func Connect() {
     }
 
     // Connect to the database
-    container, err := sqlstore.New("sqlite3", "file:"+dbPath+"?_foreign_keys=on", waLog.Noop)
+    container, err := sqlstore.New("sqlite", "file:"+dbPath+"?_foreign_keys=on", waLog.Noop)
     if err != nil {
         panic(err)
     }

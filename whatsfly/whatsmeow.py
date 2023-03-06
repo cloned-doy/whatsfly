@@ -25,14 +25,13 @@ else:
         file_ext = '-linux-amd64.so'
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
-lib = ctypes.CDLL(f'{root_dir}/dependencies/whatsmeow{file_ext}')
+lib = ctypes.cdll.LoadLibrary(f'{root_dir}/dependencies/whatsmeow/whatsmeow{file_ext}')
 
-# Define the Connect function
+# Define the Connect() and SendMessage() functions
 ClientConnect = lib.Connect
 ClientConnect.argtypes = []
 ClientConnect.restype = None
 
-# Define the argument and return types of the SendMessage function
 SendMessage = lib.SendMessage
 SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 SendMessage.restype = ctypes.c_int

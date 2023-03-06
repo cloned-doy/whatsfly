@@ -1,14 +1,9 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
+# , Extension
 from codecs import open
-import glob
-import os
-
-data_files = []
-directories = glob.glob('whatsfly/dependencies/')
-for directory in directories:
-    files = glob.glob(directory+'*')
-    data_files.append(('whatsfly/dependencies', files))
+# import glob
+# import os
 
 setup(
     name='whatsfly',
@@ -18,17 +13,14 @@ setup(
     author_email='blbblb669@gmail.com',
     url='https://github.com/cloned-doy/whatsfly',
     keywords='whatsfly',
-    install_requires=[
-          'requests',
-      ],
+    # install_requires=[
+    #       'requests',
+    #   ],
     description="WhatsApp on the fly.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     packages=find_packages(),
     include_package_data=True,
-    package_data={
-        '': ['*'],
-    },
     classifiers=[
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
@@ -38,7 +30,7 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: WhatsApp :: WhatsApp Library",
         "Topic :: Software Development :: Libraries",
     ]
 )
