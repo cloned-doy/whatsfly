@@ -79,5 +79,4 @@ Something missing? Make an issue and let us know!
 > ## Support my work
 > This side project is maintained during my free time.
 > Make a pull request and fix my bad code.
-
-### Thank god, and thanks to all the opensource developers behind the tls-client, tiktoken, and whatsmeow.
+> Thank god, and thanks to all the opensource developers behind the tls-client, tiktoken, and whatsmeow.
