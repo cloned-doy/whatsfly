@@ -1,20 +1,15 @@
 # WhatsFly
 ## Just run and have fun. Just try and go fly. 
 
-
 WhatsApp web wrapper in Python. No selenium nor gecko web driver needed. 
 
-setting up browser driver are tricky for python newcomers, and thus it makes your code soo laggy.
+Setting up browser driver are tricky for python newcomers, and thus it makes your code so 'laggy'.
 
-I knew that feeling. it was painful.
+I knew that feeling. It's so painful.
 
-powered by Whatsmeow --a golang based WhatsApp library-- 'hopefully' will make this wrapper easy to use without sacrificing the speed and perfomance.
-
-Thanks to Whatsmeow for amazing works. Inspired from tls-client, tiktoken, and whatsmeow.
+So I make WhatsFly, implementing Whatsmeow --a golang based WhatsApp library. It will make his wrapper easy to use without sacrificing the speed and perfomance.
 
 ## Installation
-
-Install WhatsFly with pip
 
 ```bash
   pip install whatsfly
@@ -22,12 +17,8 @@ Install WhatsFly with pip
 
 or :
 ```bash
-  pip3 install --upgrade whatsfly
+  pip install --upgrade whatsfly
 ```
-
-### *supported for linux amd64, linux 32bit and windows 64bit*
-### *whatsmeow library for linux arm64, windows 32bit and macOS machines are not built yet*
-
 
 ## Usage/Examples
 
@@ -38,7 +29,7 @@ chat = WhatsApp()
 chat.send_message(message="Hello World!", phone="6283139750000")
 ```
 
-## Supported features
+## Features
 
 | Feature  | Status |
 | ------------- | ------------- |
@@ -72,6 +63,21 @@ chat.send_message(message="Hello World!", phone="6283139750000")
 
 Something missing? Make an issue and let us know!
 
+## Supported machines
+
+| Architecture  | Status |
+| ------------- | ------------- |
+| Linux amd64  | ✅ |
+| Linux ARM64  | soon! |
+| Linux 686  | ✅ |
+| Linux 386  | ✅  |
+| Windows amd64  | ✅  |
+| Windows 32 bit  | soon! |
+| OSX arm64  | soon! |
+| OSX amd64  | soon! |
+
 > ## Support my work
-> This side project is maintained during my free time.\n
+> This side project is maintained during my free time.
 > Make a pull request and fix my bad code.
+
+### Thank god, and thanks to all the opensource developers behind the tls-client, tiktoken, and whatsmeow.
