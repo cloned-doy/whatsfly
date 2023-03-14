@@ -57,7 +57,7 @@ chat.send_message(message="Hello World!", phone="6283139750000")
 | Send contact cards | soon! |
 | Send location | soon! |
 | Send buttons | soon! |
-| Send lists | soon! (business accounts not supported) |
+| Send lists | soon! |
 | Receive location | soon! | 
 | Message replies | soon! |
 | Join groups by invite  | soon! |
