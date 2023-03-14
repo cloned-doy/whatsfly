@@ -2,11 +2,6 @@
 ## Just run and have fun. Just try and go fly. 
 
 
-> ## Support my work
-> This side project is maintained during my free time.
-> Make a pull request and fix my bad code.
-
-
 WhatsApp web wrapper in Python. No selenium nor gecko web driver needed. 
 
 setting up browser driver are tricky for python newcomers, and thus it makes your code soo laggy.
@@ -76,3 +71,7 @@ chat.send_message(message="Hello World!", phone="6283139750000")
 | React to messages | soon! |
 
 Something missing? Make an issue and let us know!
+
+> ## Support my work
+> This side project is maintained during my free time.\n
+> Make a pull request and fix my bad code.
