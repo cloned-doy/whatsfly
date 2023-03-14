@@ -1,6 +1,6 @@
 # most of the API refs are not mine, thanks to https://github.com/mukulhase/WebWhatsapp-Wrapper
-from .whatsmeow import ClientConnect, SendMessage
 from typing import Optional
+from .whatsmeow import ClientConnect, SendMessage
 
 class WhatsApp(object):
     def __init__(self, user: Optional[str] = None, machine: str = "mac", browser: str = "safari"):
@@ -30,9 +30,7 @@ class WhatsApp(object):
 
         sent = False
         status_info = None
-
         result = SendMessage(phone.encode(), message.encode())
-
 
         if result == 0:
         	sent = True
@@ -40,6 +38,7 @@ class WhatsApp(object):
 
         return sent, status_info
 
+# Basic WhatsApp features that I will developed soon:
 #     def get_all_chats(self):
 #     """
 #     Fetches all chats
@@ -196,8 +195,6 @@ class WhatsApp(object):
 # """
 
 if __name__ == '__main__':
-
-    # main()
     client = WhatsApp()
     message = "Hello World!"
     phone = "6283139000000"

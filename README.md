@@ -1,14 +1,17 @@
 # WhatsFly
 ## Just run and have fun. Just try and go fly. 
 
+
 > ## Support my work
+> This side project is maintained during my free time.
 > Make a pull request and fix my bad code.
+
 
 WhatsApp web wrapper in Python. No selenium nor gecko web driver needed. 
 
 setting up browser driver are tricky for python newcomers, and thus it makes your code soo laggy.
 
-i knew that feeling. it was painful.
+I knew that feeling. it was painful.
 
 powered by Whatsmeow --a golang based WhatsApp library-- 'hopefully' will make this wrapper easy to use without sacrificing the speed and perfomance.
 
@@ -27,7 +30,8 @@ or :
   pip3 install --upgrade whatsfly
 ```
 
-### *linux arm64 and macOS machines are not supported yet*
+### *supported for linux amd64, linux 32bit and windows 64bit*
+### *whatsmeow library for linux arm64, windows 32bit and macOS machines are not built yet*
 
 
 ## Usage/Examples
@@ -37,4 +41,38 @@ from whatsfly import WhatsApp
 
 chat = WhatsApp()
 chat.send_message(message="Hello World!", phone="6283139750000")
+```
 
+## Supported features
+
+| Feature  | Status |
+| ------------- | ------------- |
+| Multi Device  | ✅ |
+| Send messages  | ✅ |
+| Receive messages  | soon!  |
+| Send media (images/audio/documents)  | soon!  |
+| Send media (video)  | soon! |
+| Send stickers | soon! |
+| Receive media (images/audio/video/documents)  | soon!  |
+| Send contact cards | soon! |
+| Send location | soon! |
+| Send buttons | soon! |
+| Send lists | soon! (business accounts not supported) |
+| Receive location | soon! | 
+| Message replies | soon! |
+| Join groups by invite  | soon! |
+| Get invite for group  | soon! |
+| Modify group info (subject, description)  | soon!  |
+| Modify group settings (send messages, edit info)  | soon!  |
+| Add group participants  | soon!  |
+| Kick group participants  | soon!  |
+| Promote/demote group participants | soon! |
+| Mention users | soon! |
+| Mute/unmute chats | soon! |
+| Block/unblock contacts | soon! |
+| Get contact info | soon! |
+| Get profile pictures | soon! |
+| Set user status message | soon! |
+| React to messages | soon! |
+
+Something missing? Make an issue and let us know!

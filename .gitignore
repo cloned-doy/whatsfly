@@ -1,10 +1,10 @@
 /.vs
-/test
 /build
 /database
+/dist
 /examples/database
 /examples/test*
-/dist
+/test
 /whatsfly/whatsfly.egg-info
 /whatsfly.egg-info
 # /whatsfly/dependencies/example*
@@ -14,15 +14,8 @@ __init__.py
 /whatsfly/__pycache__
 /whatsfly/dependencies/test*
 
-# excluding build *.h files
+# excluding build *.h and test files
 whatsfly/__init__.pyc
 whatsfly/dependencies/libwapp.so
 whatsfly/dependencies/wapp.db
-whatsfly/dependencies/whatsmeow/whatsmeow-linux-386.h
-whatsfly/dependencies/whatsmeow/whatsmeow-linux-686.h
-whatsfly/dependencies/whatsmeow/whatsmeow-linux-amd64.h
-whatsfly/dependencies/whatsmeow/whatsmeow-linux-arm64.h
-whatsfly/dependencies/whatsmeow/whatsmeow-windows-32.h
-whatsfly/dependencies/whatsmeow/whatsmeow-windows-64.h
-whatsfly/dependencies/whatsmeow/whatsmeow-darwin-amd64.h
-whatsfly/dependencies/whatsmeow/whatsmeow-darwin-arm64.h
+whatsfly/dependencies/whatsmeow/whatsmeow-*.h

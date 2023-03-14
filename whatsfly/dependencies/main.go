@@ -25,7 +25,6 @@ var WpClient *whatsmeow.Client
 
 //export Connect
 func Connect() {
-
 	// Set the path for the database file
     dbPath := "database/wapp.db"
 

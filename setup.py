@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-# , Extension
 from codecs import open
-# import glob
-# import os
 
 setup(
     name='whatsfly',
@@ -13,9 +10,6 @@ setup(
     author_email='blbblb669@gmail.com',
     url='https://github.com/cloned-doy/whatsfly',
     keywords='whatsfly',
-    # install_requires=[
-    #       'requests',
-    #   ],
     description="WhatsApp on the fly.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

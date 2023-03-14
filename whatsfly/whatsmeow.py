@@ -1,6 +1,6 @@
 """
-importing c shared whatsmeow library based on your machine
-broken code will be fixed soon
+importing c shared whatsmeow library based on your machine.
+broken code will be fixed soon.
 """
 
 from sys import platform
@@ -25,9 +25,9 @@ else:
         file_ext = '-linux-amd64.so'
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
-lib = ctypes.cdll.LoadLibrary(f'{root_dir}/dependencies/whatsmeow/whatsmeow{file_ext}')
+lib = ctypes.CDLL(f'{root_dir}/dependencies/whatsmeow/whatsmeow{file_ext}')
 
-# Define the Connect() and SendMessage() functions
+# Define the Connect() and SendMessage() functions.
 ClientConnect = lib.Connect
 ClientConnect.argtypes = []
 ClientConnect.restype = None
