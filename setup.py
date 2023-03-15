@@ -7,7 +7,7 @@ setup(
     version='0.0.2',
     license='MIT',
     author="Doy Bachtiar",
-    author_email='blbblb669@gmail.com',
+    author_email='adityabachtiar996@gmail.com',
     url='https://github.com/cloned-doy/whatsfly',
     keywords='whatsfly',
     description="WhatsApp on the fly.",
@@ -16,15 +16,17 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     classifiers=[
-        "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Operating System :: Unix",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Topic :: WhatsApp :: WhatsApp Library",
-        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python",    
+        "Programming Language :: Python :: 3",    
+        "Environment :: Web Environment",    
+        "Topic :: Communications",    
+        "Topic :: Communications :: Chat",    
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ]
 )
+
