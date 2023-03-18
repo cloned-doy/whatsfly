@@ -4,7 +4,7 @@ from codecs import open
 
 setup(
     name='whatsfly',
-    version='0.0.2',
+    version='0.0.21',
     license='MIT',
     author="Doy Bachtiar",
     author_email='adityabachtiar996@gmail.com',
