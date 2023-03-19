@@ -4,6 +4,7 @@ import "C"
 
 import (
 	"os"
+    "net/http"
     // "os/signal"
     // "syscall"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
     "go.mau.fi/whatsmeow/store/sqlstore"
     "go.mau.fi/whatsmeow/types"
     waLog "go.mau.fi/whatsmeow/util/log"
+    "go.mau.fi/whatsmeow/store"
     "google.golang.org/protobuf/proto"
     _ "modernc.org/sqlite"
     // sqlite3 "github.com/mattn/go-sqlite3"
@@ -27,6 +29,10 @@ var WpClient *whatsmeow.Client
 func Connect() {
 	// Set the path for the database file
     dbPath := "database/wapp.db"
+
+    // Set Browser
+    store.DeviceProps.PlatformType = waProto.DeviceProps_SAFARI.Enum()
+    store.DeviceProps.Os = proto.String("macOS") //"Mac OS 10"
 
     // Create the directory if it doesn't exist
     err := os.MkdirAll(filepath.Dir(dbPath), 0755)
@@ -71,28 +77,79 @@ func Connect() {
     WpClient = client		
 }
 
-//export SendMessage
-func SendMessage(number *C.char, msg *C.char) C.int {
+func assignJid(number string) types.JID {
     jid := types.JID{
-        User:   C.GoString(number),
+        User:   number,
         Server: types.DefaultUserServer,
     }
+    return jid
+}
+
+//export SendMessage
+func SendMessage(number *C.char, msg *C.char) C.int {
+    // safely reset the msg string. there is a concat issue
     message := &waProto.Message{
-        Conversation: proto.String(C.GoString(msg)),
+        Conversation: proto.String(""),
     }
+    message.Conversation = proto.String(C.GoString(msg))
 
     // Check if the client is connected
-    fmt.Println("Check WpConnetion")
     if !WpClient.IsConnected() {
-    	fmt.Println("WpCLient NotCnnected")
         err := WpClient.Connect()
         if err != nil {
             return 1
         }
     }
-    fmt.Println("WpConneted")	
     
-    _, err := WpClient.SendMessage(context.Background(), jid, message)
+    _, err := WpClient.SendMessage(context.Background(), assignJid(C.GoString(number)), message)
+    if err != nil {
+        return 1
+    }
+    return 0
+}
+
+//export SendImage
+func SendImage(number *C.char, imagePath *C.char, caption *C.char) C.int {
+
+    // type imageStruct struct {
+    //     Phone       string
+    //     Image       string
+    //     Caption     string
+    //     Id          string
+    //     ContextInfo waProto.ContextInfo
+    // }
+        // Check if the client is connected
+    if !WpClient.IsConnected() {
+        err := WpClient.Connect()
+        if err != nil {
+            return 1
+        }
+    }
+
+    // var filedata []byte
+    filedata, err := os.ReadFile(C.GoString(imagePath))
+    if err != nil {
+        return 1
+    }
+    
+    var uploaded whatsmeow.UploadResponse
+    uploaded, err = WpClient.Upload(context.Background(), filedata, whatsmeow.MediaImage)
+    if err != nil {
+        return 1
+    }
+    // "data:image/png;base64,\""
+
+    msg := &waProto.Message{ImageMessage: &waProto.ImageMessage{
+        Caption:       proto.String(C.GoString(caption)),
+        Url:           proto.String(uploaded.URL),
+        DirectPath:    proto.String(uploaded.DirectPath),
+        MediaKey:      uploaded.MediaKey,
+        Mimetype:      proto.String(http.DetectContentType(filedata)),
+        FileEncSha256: uploaded.FileEncSHA256,
+        FileSha256:    uploaded.FileSHA256,
+        FileLength:    proto.Uint64(uint64(len(filedata))),
+    }}
+    _, err = WpClient.SendMessage(context.Background(),assignJid(C.GoString(number)), msg)
     if err != nil {
         return 1
     }
@@ -100,11 +157,4 @@ func SendMessage(number *C.char, msg *C.char) C.int {
 }
 
 func main() {
-    // // Listen to Ctrl+C (you can also do something else that prevents the program from exiting)
-    // c := make(chan os.Signal)
-    // signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-    // <-c
-
-    // client.Disconnect()
-
 }

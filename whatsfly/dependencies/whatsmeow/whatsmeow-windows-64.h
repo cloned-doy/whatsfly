@@ -80,6 +80,7 @@ extern "C" {
 
 extern __declspec(dllexport) void Connect();
 extern __declspec(dllexport) int SendMessage(char* number, char* msg);
+extern __declspec(dllexport) int SendImage(char* number, char* imagePath, char* caption);
 
 #ifdef __cplusplus
 }
