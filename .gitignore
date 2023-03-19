@@ -9,6 +9,7 @@
 /whatsfly.egg-info
 # /whatsfly/dependencies/example*
 __init__.py
+whatsfly-0.0.2/
 
 # excluding cache and test files
 /whatsfly/__pycache__
