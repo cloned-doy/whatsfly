@@ -41,9 +41,7 @@ class WhatsApp(object):
 
         return sent, status_info
 
-
-
-    def send_image(self, phone: str, image_path: str, caption: str):
+    def send_image(self, phone: str, image_path: str, caption: str = None):
         """
         phone : string of phone number
         image_path : string of path to image file
@@ -57,7 +55,7 @@ class WhatsApp(object):
 
         # send the message and update the status info accordingly
         image_path = os.path.abspath(image_path) if not os.path.isabs(image_path) else image_path
-        result = SendImage(phone.encode(), image_path.encode(), caption.encode())
+        result = SendImage(phone.encode(), image_path.encode(), caption.encode() if caption is not None else b"")
 
         sent = (result == 0)
         status_info = f"an image message to {phone} has been sent: {caption}" if sent else None
