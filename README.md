@@ -26,7 +26,12 @@ or :
 from whatsfly import WhatsApp
 
 chat = WhatsApp()
+
+# send mesage
 chat.send_message(phone="6283139750000", message="Hello World!")
+
+# send image
+chat.send_image(phone="6283139750000", image_path="path/to/image.jpg" caption="Hello World!")
 ```
 
 ## Features
@@ -36,7 +41,8 @@ chat.send_message(phone="6283139750000", message="Hello World!")
 | Multi Device  | ✅ |
 | Send messages  | ✅ |
 | Receive messages  | soon!  |
-| Send media (images/audio/documents)  | soon!  |
+| Send image  | ✅ |
+| Send media (audio/documents)  | soon!  |
 | Send media (video)  | soon! |
 | Send stickers | soon! |
 | Receive media (images/audio/video/documents)  | soon!  |
