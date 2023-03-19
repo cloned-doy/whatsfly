@@ -35,3 +35,7 @@ ClientConnect.restype = None
 SendMessage = lib.SendMessage
 SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 SendMessage.restype = ctypes.c_int
+
+SendImage = lib.SendImage
+SendImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+SendImage.restype = ctypes.c_int

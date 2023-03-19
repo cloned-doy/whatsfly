@@ -80,6 +80,7 @@ extern "C" {
 
 extern void Connect();
 extern int SendMessage(char* number, char* msg);
+extern int SendImage(char* number, char* imagePath, char* caption);
 
 #ifdef __cplusplus
 }

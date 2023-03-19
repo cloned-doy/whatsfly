@@ -20,3 +20,4 @@ whatsfly/__init__.pyc
 whatsfly/dependencies/libwapp.so
 whatsfly/dependencies/wapp.db
 whatsfly/dependencies/whatsmeow/whatsmeow-*.h
+/whatsfly-0.*

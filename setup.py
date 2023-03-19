@@ -4,7 +4,11 @@ from codecs import open
 
 setup(
     name='whatsfly',
+<<<<<<< HEAD
     version='0.0.21',
+=======
+    version='0.0.22',
+>>>>>>> feature/sendmedia
     license='MIT',
     author="Doy Bachtiar",
     author_email='adityabachtiar996@gmail.com',

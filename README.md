@@ -26,7 +26,7 @@ or :
 from whatsfly import WhatsApp
 
 chat = WhatsApp()
-chat.send_message(message="Hello World!", phone="6283139750000")
+chat.send_message(phone="6283139750000", message="Hello World!")
 ```
 
 ## Features
