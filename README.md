@@ -82,7 +82,7 @@ Something missing? Make an issue and let us know!
 | OSX arm64  | soon! |
 | OSX amd64  | soon! |
 
-> ## Support my work
-> This side project is maintained during my free time.
-> Make a pull request and fix my bad code.
-> Thank god, and thanks to all the opensource developers behind the tls-client, tiktoken, and whatsmeow.
+> ## Support this Project
+> This project is maintained during my free time.
+> If you'd like to support my work, please consider making a pull request to help fix any issues with the code.
+> I would like to extend my gratitude to the open-source developers behind tls-client, tiktoken, and whatsmeow. Their work has inspired me greatly and helped me to create this project.
