@@ -2,7 +2,7 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import ClientConnect, SendMessage, SendImage
+from .whatsmeow import ClientConnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage
 
 class WhatsApp(object):
     def __init__(self, user: Optional[str] = None, machine: str = "mac", browser: str = "safari"):
@@ -22,7 +22,7 @@ class WhatsApp(object):
         self.wapi_functions = browser
         self.connected = ClientConnect()
     
-    def send_message(self, phone: str, message: str):
+    def send_message(self, phone: str, message: str, group: bool = False):
         """
         send a message to a phone number. country code should be included. i.e. Indonesian number : 6283139750000
         mesage : string or a list of string
@@ -34,14 +34,15 @@ class WhatsApp(object):
         phone = re.sub(r'\D', '', phone)
 
         # send the message and update the status info accordingly
-        result = SendMessage(phone.encode(), message.encode())
+        fn = SendGroupMessage if group else SendMessage
+        result = fn(phone.encode(), message.encode())
 
         sent = (result == 0)
         status_info = f"a message to {phone} has been sent: {message}" if sent else None
 
         return sent, status_info
 
-    def send_image(self, phone: str, image_path: str, caption: str = None):
+    def send_image(self, phone: str, image_path: str, caption: str = None, group: bool = False):
         """
         phone : string of phone number
         image_path : string of path to image file
@@ -55,7 +56,9 @@ class WhatsApp(object):
 
         # send the message and update the status info accordingly
         image_path = os.path.abspath(image_path) if not os.path.isabs(image_path) else image_path
-        result = SendImage(phone.encode(), image_path.encode(), caption.encode() if caption is not None else b"")
+
+        fn = SendGroupImage if group else SendImage
+        result = fn(phone.encode(), image_path.encode(), caption.encode() if caption is not None else b"")
 
         sent = (result == 0)
         status_info = f"an image message to {phone} has been sent: {caption}" if sent else None
