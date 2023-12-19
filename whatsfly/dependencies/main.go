@@ -77,7 +77,7 @@ func Connect() {
     WpClient = client		
 }
 
-func assignJid(number string) types.JID {
+func assignUserJid(number string) types.JID {
     jid := types.JID{
         User:   number,
         Server: types.DefaultUserServer,
@@ -85,8 +85,15 @@ func assignJid(number string) types.JID {
     return jid
 }
 
-//export SendMessage
-func SendMessage(number *C.char, msg *C.char) C.int {
+func assignGroupJid(number string) types.JID {
+    jid := types.JID{
+        User:   number,
+        Server: types.GroupServer,
+    }
+    return jid
+}
+
+func _SendMessage(number types.JID, msg *C.char) C.int {
     // safely reset the msg string. there is a concat issue
     message := &waProto.Message{
         Conversation: proto.String(""),
@@ -101,15 +108,26 @@ func SendMessage(number *C.char, msg *C.char) C.int {
         }
     }
     
-    _, err := WpClient.SendMessage(context.Background(), assignJid(C.GoString(number)), message)
+    _, err := WpClient.SendMessage(context.Background(), number, message)
     if err != nil {
         return 1
     }
     return 0
 }
 
-//export SendImage
-func SendImage(number *C.char, imagePath *C.char, caption *C.char) C.int {
+//export SendMessage
+func SendMessage(number *C.char, msg *C.char) C.int {
+    var jid types.JID = assignUserJid(C.GoString(number))
+    return _SendMessage(jid, msg)
+}
+
+//export SendGroupMessage
+func SendGroupMessage(number *C.char, msg *C.char) C.int {
+    var jid types.JID = assignGroupJid(C.GoString(number))
+    return _SendMessage(jid, msg)
+}
+
+func _SendImage(number types.JID, imagePath *C.char, caption *C.char) C.int {
 
     // type imageStruct struct {
     //     Phone       string
@@ -149,11 +167,23 @@ func SendImage(number *C.char, imagePath *C.char, caption *C.char) C.int {
         FileSha256:    uploaded.FileSHA256,
         FileLength:    proto.Uint64(uint64(len(filedata))),
     }}
-    _, err = WpClient.SendMessage(context.Background(),assignJid(C.GoString(number)), msg)
+    _, err = WpClient.SendMessage(context.Background(), number, msg)
     if err != nil {
         return 1
     }
     return 0
+}
+
+//export SendImage
+func SendImage(number *C.char, imagePath *C.char, caption *C.char) C.int {
+    var jid types.JID = assignUserJid(C.GoString(number))
+    return _SendImage(jid, imagePath, caption)
+}
+
+//export SendGroupImage
+func SendGroupImage(number *C.char, imagePath *C.char, caption *C.char) C.int {
+    var jid types.JID = assignGroupJid(C.GoString(number))
+    return _SendImage(jid, imagePath, caption)
 }
 
 func main() {
