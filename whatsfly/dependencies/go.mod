@@ -3,10 +3,10 @@ module hey.jude/hey
 go 1.19
 
 require (
-	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/mdp/qrterminal/v3 v3.0.0
-	go.mau.fi/whatsmeow v0.0.0-20230226124255-e5c8f3c95d78
-	google.golang.org/protobuf v1.28.1
+	go.mau.fi/whatsmeow v0.0.0-20231216213200-9d803dd92735
+	google.golang.org/protobuf v1.31.0
 )
 
 require (
@@ -19,9 +19,10 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
+	go.mau.fi/util v0.2.0 // indirect
+	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/mod v0.3.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/tools v0.0.0-20201124115921-2c860bdd6e78 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
