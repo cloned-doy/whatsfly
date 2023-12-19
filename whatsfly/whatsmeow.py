@@ -36,6 +36,14 @@ SendMessage = lib.SendMessage
 SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 SendMessage.restype = ctypes.c_int
 
+SendGroupMessage = lib.SendGroupMessage
+SendGroupMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+SendGroupMessage.restype = ctypes.c_int
+
 SendImage = lib.SendImage
 SendImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
 SendImage.restype = ctypes.c_int
+
+SendGroupImage = lib.SendGroupImage
+SendGroupImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+SendGroupImage.restype = ctypes.c_int
