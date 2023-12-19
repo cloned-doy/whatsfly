@@ -41,7 +41,7 @@ func Connect() {
     }
 
     // Connect to the database
-    container, err := sqlstore.New("sqlite", "file:"+dbPath+"?_foreign_keys=on", waLog.Noop)
+    container, err := sqlstore.New("sqlite", "file:"+dbPath+"?_pragma=foreign_keys(1)", waLog.Noop)
     if err != nil {
         panic(err)
     }
