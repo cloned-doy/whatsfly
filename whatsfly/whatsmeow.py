@@ -47,3 +47,7 @@ SendImage.restype = ctypes.c_int
 SendGroupImage = lib.SendGroupImage
 SendGroupImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
 SendGroupImage.restype = ctypes.c_int
+
+HandlerThread = lib.HandlerThread
+HandlerThread.argtypes = [ctypes.CFUNCTYPE(None, ctypes.c_char_p)]
+HandlerThread.restype = None
