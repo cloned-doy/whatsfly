@@ -2,10 +2,12 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import ClientConnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage
+from .whatsmeow import ClientConnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
+import ctypes
+import json
 
 class WhatsApp(object):
-    def __init__(self, user: Optional[str] = None, machine: str = "mac", browser: str = "safari"):
+    def __init__(self, user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
         """
         user : user phone number. in the whatsmeow golang are called client.
         machine : os login info
@@ -20,8 +22,16 @@ class WhatsApp(object):
         self.machine = machine
         self.browser = browser
         self.wapi_functions = browser
+
         self.connected = ClientConnect()
-    
+
+        if callable(event_callback):
+            def python_callback(s):
+                event_callback(json.loads(s.decode()))
+
+            CMPFUNC = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
+            HandlerThread(CMPFUNC(python_callback))
+
     def send_message(self, phone: str, message: str, group: bool = False):
         """
         send a message to a phone number. country code should be included. i.e. Indonesian number : 6283139750000
