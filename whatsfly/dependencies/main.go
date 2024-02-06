@@ -20,7 +20,7 @@ import (
     "path/filepath"
     "fmt"
     "context"
-    "github.com/mdp/qrterminal/v3"
+    // "github.com/mdp/qrterminal/v3"
     "go.mau.fi/whatsmeow"
     waProto "go.mau.fi/whatsmeow/binary/proto"
     "go.mau.fi/whatsmeow/store/sqlstore"
@@ -55,7 +55,7 @@ var EventQueue = goconcurrentqueue.NewFIFO()
 //export Connect
 func Connect() {
     // Set the path for the database file
-    dbPath := "database/wapp.db"
+    dbPath := "whatsapp/wapp.db"
 
     // Set Browser
     store.DeviceProps.PlatformType = waProto.DeviceProps_SAFARI.Enum()
@@ -88,7 +88,8 @@ func Connect() {
         }
         for evt := range qrChan {
             if evt.Event == "code" {
-                qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
+                // qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
+                fmt.Println("QR code:", evt.Code)
             } else {
                 fmt.Println("Login event:", evt.Event)
             }
