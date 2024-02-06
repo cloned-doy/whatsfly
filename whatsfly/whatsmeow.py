@@ -32,6 +32,10 @@ ClientConnect = lib.Connect
 ClientConnect.argtypes = []
 ClientConnect.restype = None
 
+ClientDisconnect = lib.Disconnect
+ClientDisconnect.argtypes = []
+ClientDisconnect.restype = None
+
 SendMessage = lib.SendMessage
 SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 SendMessage.restype = ctypes.c_int

@@ -2,7 +2,7 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import ClientConnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
+from .whatsmeow import ClientConnect, ClientDisconnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
 import ctypes
 import json
 
@@ -31,6 +31,9 @@ class WhatsApp(object):
 
             CMPFUNC = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
             HandlerThread(CMPFUNC(python_callback))
+
+    def close(self):
+        ClientDisconnect()
 
     def send_message(self, phone: str, message: str, group: bool = False):
         """

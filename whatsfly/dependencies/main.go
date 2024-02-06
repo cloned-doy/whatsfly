@@ -7,8 +7,8 @@ package main
    typedef void (*ptr_to_python_function) (char*);
 
    static inline void call_c_func(ptr_to_python_function ptr, char* jsonStr) {
-    (ptr)(jsonStr);
-    }
+     (ptr)(jsonStr);
+   }
 */
 import "C"
 
@@ -86,12 +86,22 @@ func Connect() {
         if err != nil {
             panic(err)
         }
-        for evt := range qrChan {
-            if evt.Event == "code" {
-                // qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
-                fmt.Println("QR code:", evt.Code)
-            } else {
-                fmt.Println("Login event:", evt.Event)
+        for {
+            select {
+            case <-time.After(60 * time.Second):
+                client.Disconnect()
+                fmt.Println("Timeout; disconnect")
+                return
+            case evt, ok := <-qrChan:
+                if !ok {
+                    return
+                }
+                if evt.Event == "code" {
+                    // qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
+                    fmt.Println("QR code:", evt.Code)
+                } else {
+                    fmt.Println("Login event:", evt.Event)
+                }
             }
         }
     } else {
@@ -104,8 +114,17 @@ func Connect() {
     }
 
     WpClient = client
+    // Listen to Ctrl+C (you can also do something else that prevents the program from exiting)
+    // c := make(chan os.Signal)
+    // signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+    // <-c
 }
 
+//export Disconnect
+func Disconnect() {
+    WpClient.Disconnect()
+    fmt.Println("Disconnected")
+}
 
 
 func assignUserJid(number string) types.JID {
@@ -133,6 +152,7 @@ func _SendMessage(number types.JID, msg *C.char) C.int {
 
     // Check if the client is connected
     if !WpClient.IsConnected() {
+        fmt.Println("Reconnect")
         err := WpClient.Connect()
         if err != nil {
             return 1

@@ -28,8 +28,8 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
    typedef void (*ptr_to_python_function) (char*);
 
    static inline void call_c_func(ptr_to_python_function ptr, char* jsonStr) {
-    (ptr)(jsonStr);
-    }
+     (ptr)(jsonStr);
+   }
 
 #line 1 "cgo-generated-wrapper"
 
@@ -88,6 +88,7 @@ extern "C" {
 #endif
 
 extern void Connect();
+extern void Disconnect();
 extern int SendMessage(char* number, char* msg);
 extern int SendGroupMessage(char* number, char* msg);
 extern int SendImage(char* number, char* imagePath, char* caption);
