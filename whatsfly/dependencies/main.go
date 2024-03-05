@@ -335,43 +335,45 @@ func handler(rawEvt interface{}) {
             info += strings.Join(flags, ",")
             info += "]"
 
-            var mimetype string
-            var media_path_subdir string
-            var data []byte
-            var err error
-            switch {
-            case evt.Message.ImageMessage != nil:
-                mimetype = evt.Message.ImageMessage.GetMimetype()
-                data, err = WpClient.Download(evt.Message.ImageMessage)
-                media_path_subdir = "images"
-            case evt.Message.AudioMessage != nil:
-                mimetype = evt.Message.AudioMessage.GetMimetype()
-                data, err = WpClient.Download(evt.Message.AudioMessage)
-                media_path_subdir = "audios"
-            case evt.Message.VideoMessage != nil:
-                mimetype = evt.Message.VideoMessage.GetMimetype()
-                data, err = WpClient.Download(evt.Message.VideoMessage)
-                media_path_subdir = "videos"
-            case evt.Message.DocumentMessage != nil:
-                mimetype = evt.Message.DocumentMessage.GetMimetype()
-                data, err = WpClient.Download(evt.Message.DocumentMessage)
-                media_path_subdir = "documents"
-            case evt.Message.StickerMessage != nil:
-                mimetype = evt.Message.StickerMessage.GetMimetype()
-                data, err = WpClient.Download(evt.Message.StickerMessage)
-                media_path_subdir = "stickers"
-            }
+            if len(media_path) > 0 {
+                var mimetype string
+                var media_path_subdir string
+                var data []byte
+                var err error
+                switch {
+                case evt.Message.ImageMessage != nil:
+                    mimetype = evt.Message.ImageMessage.GetMimetype()
+                    data, err = WpClient.Download(evt.Message.ImageMessage)
+                    media_path_subdir = "images"
+                case evt.Message.AudioMessage != nil:
+                    mimetype = evt.Message.AudioMessage.GetMimetype()
+                    data, err = WpClient.Download(evt.Message.AudioMessage)
+                    media_path_subdir = "audios"
+                case evt.Message.VideoMessage != nil:
+                    mimetype = evt.Message.VideoMessage.GetMimetype()
+                    data, err = WpClient.Download(evt.Message.VideoMessage)
+                    media_path_subdir = "videos"
+                case evt.Message.DocumentMessage != nil:
+                    mimetype = evt.Message.DocumentMessage.GetMimetype()
+                    data, err = WpClient.Download(evt.Message.DocumentMessage)
+                    media_path_subdir = "documents"
+                case evt.Message.StickerMessage != nil:
+                    mimetype = evt.Message.StickerMessage.GetMimetype()
+                    data, err = WpClient.Download(evt.Message.StickerMessage)
+                    media_path_subdir = "stickers"
+                }
 
-            if err != nil {
-                fmt.Printf("Failed to download image: %v", err)
-            } else {
-                exts, _ := mime.ExtensionsByType(mimetype)
-                path := fmt.Sprintf("%s/%s/%s%s", media_path, media_path_subdir, evt.Info.ID, exts[0])
-                err = os.WriteFile(path, data, 0600)
                 if err != nil {
-                    fmt.Printf("Failed to save image: %v", err)
+                    fmt.Printf("Failed to download media: %v", err)
                 } else {
-                    info += ",\"filepath\":\""+path+"\""
+                    exts, _ := mime.ExtensionsByType(mimetype)
+                    path := fmt.Sprintf("%s/%s/%s%s", media_path, media_path_subdir, evt.Info.ID, exts[0])
+                    err = os.WriteFile(path, data, 0600)
+                    if err != nil {
+                        fmt.Printf("Failed to save media: %v", err)
+                    } else {
+                        info += ",\"filepath\":\""+path+"\""
+                    }
                 }
             }
 
