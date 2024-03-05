@@ -87,7 +87,7 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern __declspec(dllexport) void Connect(char* c_number);
+extern __declspec(dllexport) void Connect(char* c_number, char* c_media_path);
 extern __declspec(dllexport) void Disconnect();
 extern __declspec(dllexport) int SendMessage(char* number, char* msg);
 extern __declspec(dllexport) int SendGroupMessage(char* number, char* msg);

@@ -33,7 +33,7 @@ import (
     // sqlite3 "github.com/mattn/go-sqlite3"
 
     "strings"
-    // "mime"
+    "mime"
     "time"
     "sync/atomic"
     "encoding/json"
@@ -52,10 +52,12 @@ var WpClient *whatsmeow.Client
 var EventQueue = goconcurrentqueue.NewFIFO()
 
 var event_queue_running bool = true
+var media_path string
 
 //export Connect
-func Connect(c_number *C.char) {
+func Connect(c_number *C.char, c_media_path *C.char) {
     phone_number := C.GoString(c_number)
+    media_path = C.GoString(c_media_path)
 
     // Set the path for the database file
     dbPath := "whatsapp/wapp.db"
@@ -331,7 +333,49 @@ func handler(rawEvt interface{}) {
                 flags = append(flags, "\"edit\"")
             }
             info += strings.Join(flags, ",")
-            info += "]}"
+            info += "]"
+
+            var mimetype string
+            var media_path_subdir string
+            var data []byte
+            var err error
+            switch {
+            case evt.Message.ImageMessage != nil:
+                mimetype = evt.Message.ImageMessage.GetMimetype()
+                data, err = WpClient.Download(evt.Message.ImageMessage)
+                media_path_subdir = "images"
+            case evt.Message.AudioMessage != nil:
+                mimetype = evt.Message.AudioMessage.GetMimetype()
+                data, err = WpClient.Download(evt.Message.AudioMessage)
+                media_path_subdir = "audios"
+            case evt.Message.VideoMessage != nil:
+                mimetype = evt.Message.VideoMessage.GetMimetype()
+                data, err = WpClient.Download(evt.Message.VideoMessage)
+                media_path_subdir = "videos"
+            case evt.Message.DocumentMessage != nil:
+                mimetype = evt.Message.DocumentMessage.GetMimetype()
+                data, err = WpClient.Download(evt.Message.DocumentMessage)
+                media_path_subdir = "documents"
+            case evt.Message.StickerMessage != nil:
+                mimetype = evt.Message.StickerMessage.GetMimetype()
+                data, err = WpClient.Download(evt.Message.StickerMessage)
+                media_path_subdir = "stickers"
+            }
+
+            if err != nil {
+                fmt.Printf("Failed to download image: %v", err)
+            } else {
+                exts, _ := mime.ExtensionsByType(mimetype)
+                path := fmt.Sprintf("%s/%s/%s%s", media_path, media_path_subdir, evt.Info.ID, exts[0])
+                err = os.WriteFile(path, data, 0600)
+                if err != nil {
+                    fmt.Printf("Failed to save image: %v", err)
+                } else {
+                    info += ",\"filepath\":\""+path+"\""
+                }
+            }
+
+            info += "}"
 
             var m, _ = protojson.Marshal(evt.Message)
             var message_info string = string(m)
@@ -340,8 +384,22 @@ func handler(rawEvt interface{}) {
             EventQueue.Enqueue(json_str)
         case *events.Receipt:
             if evt.Type == types.ReceiptTypeRead || evt.Type == types.ReceiptTypeReadSelf {
+                json_str := "{\"eventType\":\"MessageRead\",\"messageIDs\":["
+
+                messageIDsLen := len(evt.MessageIDs)
+                for key, value := range evt.MessageIDs {
+                    json_str += "\""+value+"\""
+                    if key < messageIDsLen - 1 {
+                        json_str += ","
+                    }
+                }
+                json_str += "],\"sourceString\":\""+evt.SourceString()+"\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+"}"
+
+                EventQueue.Enqueue(json_str)
                 //log.Infof("%v was read by %s at %s", evt.MessageIDs, evt.SourceString(), evt.Timestamp)
             } else if evt.Type == types.ReceiptTypeDelivered {
+                json_str := "{\"eventType\":\"MessageDelivered\",\"messageID\":\""+evt.MessageIDs[0]+"\",\"sourceString\":\""+evt.SourceString()+"\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+"}"
+                EventQueue.Enqueue(json_str)
                 //log.Infof("%s was delivered to %s at %s", evt.MessageIDs[0], evt.SourceString(), evt.Timestamp)
             }
         case *events.Presence:
@@ -379,21 +437,21 @@ func handler(rawEvt interface{}) {
             EventQueue.Enqueue("{\"eventType\":\"HistorySync\",\"filename\":\""+fileName+"\"}")
         case *events.AppState:
             //log.Debugf("App state event: %+v / %+v", evt.Index, evt.SyncActionValue)
-            var json_string string = "{\"eventType\":\"AppState\",\"index\":\"["
+            var json_str string = "{\"eventType\":\"AppState\",\"index\":\"["
             var event_index_size int = len(evt.Index)
             for key, value := range evt.Index {
-                json_string += "\""+value+"\""
+                json_str += "\""+value+"\""
                 if key < event_index_size - 1 {
-                    json_string += ","
+                    json_str += ","
                 }
             }
-            json_string += "],\"syncActionValue\":"+evt.SyncActionValue.String()+"}"
-            EventQueue.Enqueue(json_string)
+            json_str += "],\"syncActionValue\":"+evt.SyncActionValue.String()+"}"
+            EventQueue.Enqueue(json_str)
             
         case *events.KeepAliveTimeout:
             //log.Debugf("Keepalive timeout event: %+v", evt)
-            var json_string string = "{\"eventType\":\"KeepAliveTimeout\",\"errorCount\":"+strconv.FormatInt(int64(evt.ErrorCount), 10)+",\"lastSuccess\":"+strconv.FormatInt(evt.LastSuccess.Unix(), 10)+"}"
-            EventQueue.Enqueue(json_string)
+            var json_str string = "{\"eventType\":\"KeepAliveTimeout\",\"errorCount\":"+strconv.FormatInt(int64(evt.ErrorCount), 10)+",\"lastSuccess\":"+strconv.FormatInt(evt.LastSuccess.Unix(), 10)+"}"
+            EventQueue.Enqueue(json_str)
         case *events.KeepAliveRestored:
             //log.Debugf("Keepalive restored")
             EventQueue.Enqueue("{\"eventType\":\"KeepAliveRestored\"}")

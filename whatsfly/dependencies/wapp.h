@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-void Connect(char* number);
-int SendMessage(char* number,char* msg);
+void Connect(char*, char*);
+int SendMessage(char*, char*);
 
 #ifdef __cplusplus
 }

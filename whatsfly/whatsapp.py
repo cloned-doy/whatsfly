@@ -8,7 +8,7 @@ import json
 import threading
 
 class WhatsApp(object):
-    def __init__(self, phone_number: str = "", user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
+    def __init__(self, phone_number: str = "", media_path: str = "", user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
         """
         user : user phone number. in the whatsmeow golang are called client.
         machine : os login info
@@ -24,6 +24,14 @@ class WhatsApp(object):
         self.browser = browser
         self.wapi_functions = browser
         self.connected = None
+
+        if media_path:
+            if not os.path.exists(media_path):
+                os.makedirs(media_path)
+            for subdir in ["images", "audios", "videos", "documents", "stickers"]:
+                full_media_path = media_path + "/" + subdir
+                if not os.path.exists(full_media_path):
+                    os.makedirs(full_media_path)
 
         if callable(event_callback):
             def python_callback(s):
@@ -42,7 +50,7 @@ class WhatsApp(object):
             self.handler_thread = threading.Thread(target=HandlerThread, args=(CMPFUNC(python_callback),))
             self.handler_thread.start()
 
-        self.connected = ClientConnect(phone_number.encode())
+        self.connected = ClientConnect(phone_number.encode(), media_path.encode())
 
     def close(self):
         if self.connected:

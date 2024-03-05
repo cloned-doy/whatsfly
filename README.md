@@ -45,7 +45,7 @@ chat.send_image(phone="6283139750000", image_path="path/to/image.jpg" caption="H
 | Send media (audio/documents)  | soon!  |
 | Send media (video)  | soon! |
 | Send stickers | soon! |
-| Receive media (images/audio/video/documents)  | soon!  |
+| Receive media (images/audio/video/documents)  | ✅  |
 | Send contact cards | soon! |
 | Send location | soon! |
 | Send buttons | soon! |
