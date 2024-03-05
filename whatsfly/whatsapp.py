@@ -2,12 +2,13 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import ClientConnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
+from .whatsmeow import ClientConnect, ClientDisconnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
 import ctypes
 import json
+import threading
 
 class WhatsApp(object):
-    def __init__(self, user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
+    def __init__(self, phone_number: str = "", media_path: str = "", user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
         """
         user : user phone number. in the whatsmeow golang are called client.
         machine : os login info
@@ -22,15 +23,39 @@ class WhatsApp(object):
         self.machine = machine
         self.browser = browser
         self.wapi_functions = browser
+        self.connected = None
 
-        self.connected = ClientConnect()
+        if media_path:
+            if not os.path.exists(media_path):
+                os.makedirs(media_path)
+            for subdir in ["images", "audios", "videos", "documents", "stickers"]:
+                full_media_path = media_path + "/" + subdir
+                if not os.path.exists(full_media_path):
+                    os.makedirs(full_media_path)
 
         if callable(event_callback):
             def python_callback(s):
-                event_callback(json.loads(s.decode()))
+                try:
+                    s = s.decode()
+                except:
+                    pass
+                try:
+                    s = json.loads(s)
+                except:
+                    pass
+                event_callback(s)
 
             CMPFUNC = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
-            HandlerThread(CMPFUNC(python_callback))
+
+            self.handler_thread = threading.Thread(target=HandlerThread, args=(CMPFUNC(python_callback),))
+            self.handler_thread.start()
+
+        self.connected = ClientConnect(phone_number.encode(), media_path.encode())
+
+    def close(self):
+        if self.connected:
+            ClientDisconnect()
+        self.handler_thread.join()
 
     def send_message(self, phone: str, message: str, group: bool = False):
         """

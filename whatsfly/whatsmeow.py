@@ -29,8 +29,12 @@ lib = ctypes.CDLL(f'{root_dir}/dependencies/whatsmeow/whatsmeow{file_ext}')
 
 # Define the Connect() and SendMessage() functions.
 ClientConnect = lib.Connect
-ClientConnect.argtypes = []
+ClientConnect.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 ClientConnect.restype = None
+
+ClientDisconnect = lib.Disconnect
+ClientDisconnect.argtypes = []
+ClientDisconnect.restype = None
 
 SendMessage = lib.SendMessage
 SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
