@@ -87,7 +87,7 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern void Connect();
+extern void Connect(char* c_number);
 extern void Disconnect();
 extern int SendMessage(char* number, char* msg);
 extern int SendGroupMessage(char* number, char* msg);

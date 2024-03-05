@@ -20,7 +20,7 @@ import (
     "path/filepath"
     "fmt"
     "context"
-    // "github.com/mdp/qrterminal/v3"
+    "github.com/mdp/qrterminal/v3"
     "go.mau.fi/whatsmeow"
     waProto "go.mau.fi/whatsmeow/binary/proto"
     "go.mau.fi/whatsmeow/store/sqlstore"
@@ -51,9 +51,12 @@ var startupTime = time.Now().Unix()
 var WpClient *whatsmeow.Client
 var EventQueue = goconcurrentqueue.NewFIFO()
 
+var event_queue_running bool = true
 
 //export Connect
-func Connect() {
+func Connect(c_number *C.char) {
+    phone_number := C.GoString(c_number)
+
     // Set the path for the database file
     dbPath := "whatsapp/wapp.db"
 
@@ -97,7 +100,16 @@ func Connect() {
                     return
                 }
                 if evt.Event == "code" {
-                    // qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
+                    if len(phone_number) > 0 {
+                    linkingCode, err := client.PairPhone(phone_number, true, whatsmeow.PairClientChrome, "Chrome (Linux)")
+                        if err != nil {
+                            panic(err)
+                        }
+                        EventQueue.Enqueue("{\"eventType\":\"linkCode\", \"code\": \""+linkingCode+"\"}")
+                        fmt.Println("Linking code:", linkingCode)
+                    }
+                    EventQueue.Enqueue("{\"eventType\":\"qrCode\", \"code\": \""+evt.Code+"\"}")
+                    qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
                     fmt.Println("QR code:", evt.Code)
                 } else {
                     fmt.Println("Login event:", evt.Event)
@@ -122,8 +134,10 @@ func Connect() {
 
 //export Disconnect
 func Disconnect() {
-    WpClient.Disconnect()
-    fmt.Println("Disconnected")
+    if WpClient != nil {
+        WpClient.Disconnect()
+    }
+    event_queue_running = false
 }
 
 
@@ -366,8 +380,12 @@ func handler(rawEvt interface{}) {
         case *events.AppState:
             //log.Debugf("App state event: %+v / %+v", evt.Index, evt.SyncActionValue)
             var json_string string = "{\"eventType\":\"AppState\",\"index\":\"["
-            for _, value := range evt.Index {
+            var event_index_size int = len(evt.Index)
+            for key, value := range evt.Index {
                 json_string += "\""+value+"\""
+                if key < event_index_size - 1 {
+                    json_string += ","
+                }
             }
             json_string += "],\"syncActionValue\":"+evt.SyncActionValue.String()+"}"
             EventQueue.Enqueue(json_string)
@@ -395,18 +413,22 @@ var ptr_to_python_function C.ptr_to_python_function
 //export HandlerThread
 func HandlerThread(fn C.ptr_to_python_function) {
     ptr_to_python_function = fn
-    for{
-        // fmt.Println("1 - Waiting for next enqueued element")
-        value, _ := EventQueue.DequeueOrWaitForNextElement()
-        // fmt.Printf("2 - Dequeued element: %v\n", value)
-        // fmt.Println(ptr_to_python_function)
+    for {
+        if !event_queue_running {
+            break
+        }
 
-        var str_value = value.(string)
-        var cstr = C.CString(str_value)
+        for EventQueue.GetLen() > 0 {
+            value, _ := EventQueue.Dequeue()
 
-        C.call_c_func(ptr_to_python_function, cstr)
-        C.free(unsafe.Pointer(cstr))
-        // fmt.Printf("3 - DONE")
+            var str_value = value.(string)
+            var cstr = C.CString(str_value)
+
+            C.call_c_func(ptr_to_python_function, cstr)
+            C.free(unsafe.Pointer(cstr))
+        }
+
+        time.Sleep(100 * time.Millisecond)
     }
 }
 
