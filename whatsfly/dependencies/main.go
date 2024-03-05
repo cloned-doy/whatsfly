@@ -310,7 +310,7 @@ func handler(rawEvt interface{}) {
             }
             info += ",\"multicast\":"+strconv.FormatBool(evt.Info.Multicast)
             if evt.Info.MediaType != "" {
-                info += ",\"mediaType\": "+evt.Info.MediaType
+                info += ",\"mediaType\": \""+evt.Info.MediaType+"\""
             }
             info += ",\"flags\":["
 

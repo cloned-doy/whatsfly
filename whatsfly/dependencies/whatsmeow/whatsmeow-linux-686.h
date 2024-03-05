@@ -22,6 +22,15 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 #line 2 "main.go"
  #include "wapp.h"
 
+
+   #include <stdlib.h>
+
+   typedef void (*ptr_to_python_function) (char*);
+
+   static inline void call_c_func(ptr_to_python_function ptr, char* jsonStr) {
+     (ptr)(jsonStr);
+   }
+
 #line 1 "cgo-generated-wrapper"
 
 
@@ -78,9 +87,13 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern void Connect();
+extern void Connect(char* c_number);
+extern void Disconnect();
 extern int SendMessage(char* number, char* msg);
+extern int SendGroupMessage(char* number, char* msg);
 extern int SendImage(char* number, char* imagePath, char* caption);
+extern int SendGroupImage(char* number, char* imagePath, char* caption);
+extern void HandlerThread(ptr_to_python_function fn);
 
 #ifdef __cplusplus
 }

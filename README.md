@@ -40,7 +40,7 @@ chat.send_image(phone="6283139750000", image_path="path/to/image.jpg" caption="H
 | ------------- | ------------- |
 | Multi Device  | ✅ |
 | Send messages  | ✅ |
-| Receive messages  | soon!  |
+| Receive messages  | ✅ |
 | Send image  | ✅ |
 | Send media (audio/documents)  | soon!  |
 | Send media (video)  | soon! |
@@ -74,7 +74,7 @@ Something missing? Make an issue and let us know!
 | Architecture  | Status |
 | ------------- | ------------- |
 | Linux amd64  | ✅ |
-| Linux ARM64  | soon! |
+| Linux ARM64  | ✅ |
 | Linux 686  | ✅ |
 | Linux 386  | ✅  |
 | Windows amd64  | ✅  |
