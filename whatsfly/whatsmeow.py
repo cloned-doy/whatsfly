@@ -27,31 +27,21 @@ else:
 root_dir = os.path.abspath(os.path.dirname(__file__))
 lib = ctypes.CDLL(f'{root_dir}/dependencies/whatsmeow/whatsmeow{file_ext}')
 
-# Define the Connect() and SendMessage() functions.
-ClientConnect = lib.Connect
-ClientConnect.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-ClientConnect.restype = None
+new_whatsapp_client_wrapper = lib.NewWhatsAppClientWrapper
+new_whatsapp_client_wrapper.argstype = [ctypes.c_char_p, ctypes.c_char_p, ctypes.CFUNCTYPE(None), ctypes.CFUNCTYPE(None, ctypes.c_char_p)]
+new_whatsapp_client_wrapper.restype = ctypes.c_int
 
-ClientDisconnect = lib.Disconnect
-ClientDisconnect.argtypes = []
-ClientDisconnect.restype = None
+connect_wrapper = lib.ConnectWrapper
+connect_wrapper.argstype = [ctypes.c_int]
 
-SendMessage = lib.SendMessage
-SendMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-SendMessage.restype = ctypes.c_int
+disconnect_wrapper = lib.DisconnectWrapper
+disconnect_wrapper.argstype = [ctypes.c_int]
 
-SendGroupMessage = lib.SendGroupMessage
-SendGroupMessage.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-SendGroupMessage.restype = ctypes.c_int
+message_thread_wrapper = lib.MessageThreadWrapper
+message_thread_wrapper.argstype = [ctypes.c_int]
 
-SendImage = lib.SendImage
-SendImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
-SendImage.restype = ctypes.c_int
+send_message_wrapper = lib.SendMessageWrapper
+send_message_wrapper.argstype = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_bool]
 
-SendGroupImage = lib.SendGroupImage
-SendGroupImage.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
-SendGroupImage.restype = ctypes.c_int
-
-HandlerThread = lib.HandlerThread
-HandlerThread.argtypes = [ctypes.CFUNCTYPE(None, ctypes.c_char_p)]
-HandlerThread.restype = None
+send_image_wrapper = lib.SendImageWrapper
+send_image_wrapper.argstype = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_bool]

@@ -2,103 +2,10 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import ClientConnect, ClientDisconnect, SendMessage, SendGroupMessage, SendImage, SendGroupImage, HandlerThread
+from .whatsmeow import new_whatsapp_client_wrapper, connect_wrapper, message_thread_wrapper, send_message_wrapper, send_image_wrapper
 import ctypes
 import json
 import threading
-
-class WhatsApp(object):
-    def __init__(self, phone_number: str = "", media_path: str = "", user: Optional[str] = None, machine: str = "mac", browser: str = "safari", event_callback = None):
-        """
-        user : user phone number. in the whatsmeow golang are called client.
-        machine : os login info
-        browser : browser login info
-        import the compiled whatsmeow golang package, and setup basic client and database.
-        auto run based on any database (login and chat info database), hence a user phone number are declared.
-        if there is no user login assigned yet, assign a new client.
-        put the database in current file whereever this class instancess are imported. database/client.db
-        """
-        self.user 	 = user 
-        self.user_name = None
-        self.machine = machine
-        self.browser = browser
-        self.wapi_functions = browser
-        self.connected = None
-
-        if media_path:
-            if not os.path.exists(media_path):
-                os.makedirs(media_path)
-            for subdir in ["images", "audios", "videos", "documents", "stickers"]:
-                full_media_path = media_path + "/" + subdir
-                if not os.path.exists(full_media_path):
-                    os.makedirs(full_media_path)
-
-        if callable(event_callback):
-            def python_callback(s):
-                try:
-                    s = s.decode()
-                except:
-                    pass
-                try:
-                    s = json.loads(s)
-                except:
-                    pass
-                event_callback(s)
-
-            CMPFUNC = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
-
-            self.handler_thread = threading.Thread(target=HandlerThread, args=(CMPFUNC(python_callback),))
-            self.handler_thread.start()
-
-        self.connected = ClientConnect(phone_number.encode(), media_path.encode())
-
-    def close(self):
-        if self.connected:
-            ClientDisconnect()
-        self.handler_thread.join()
-
-    def send_message(self, phone: str, message: str, group: bool = False):
-        """
-        send a message to a phone number. country code should be included. i.e. Indonesian number : 6283139750000
-        mesage : string or a list of string
-        phone : string or list of string
-
-        return : status info. bool or str?
-        """
-        # remove any non-digits from the phone number
-        phone = re.sub(r'\D', '', phone)
-
-        # send the message and update the status info accordingly
-        fn = SendGroupMessage if group else SendMessage
-        result = fn(phone.encode(), message.encode())
-
-        sent = (result == 0)
-        status_info = f"a message to {phone} has been sent: {message}" if sent else None
-
-        return sent, status_info
-
-    def send_image(self, phone: str, image_path: str, caption: str = None, group: bool = False):
-        """
-        phone : string of phone number
-        image_path : string of path to image file
-        caption : string about additional caption/message. optional.
-
-        return : status info. bool or str?
-        """
-
-        # remove any non-digits from the phone number
-        phone = re.sub(r'\D', '', phone)
-
-        # send the message and update the status info accordingly
-        image_path = os.path.abspath(image_path) if not os.path.isabs(image_path) else image_path
-
-        fn = SendGroupImage if group else SendImage
-        result = fn(phone.encode(), image_path.encode(), caption.encode() if caption is not None else b"")
-
-        sent = (result == 0)
-        status_info = f"an image message to {phone} has been sent: {caption}" if sent else None
-
-        return sent, status_info
 
 """
 Basic WhatsApp features that I will developed soon:
@@ -250,6 +157,79 @@ Basic WhatsApp features that I will developed soon:
     # return qr.screenshot_as_base64
     return
 """
+
+
+class WhatsApp(object):
+    def connect(self):
+        connect_wrapper(self.c_WhatsAppClientId)
+
+    def disconnect(self):
+        disconnect_wrapper(self.c_WhatsAppClientId)
+
+    def runMessageThread(self):
+        message_thread_wrapper(self.c_WhatsAppClientId)
+
+    def sendMessage(self, phone: str, message: str, group: bool = False):
+        print("Python sendMessage START")
+        ret = send_message_wrapper(self.c_WhatsAppClientId, phone.encode(), message.encode(), group)
+        print("Python sendMessage END")
+    
+    def sendImage(self, phone: str, image_path: str, caption: str = "", group: bool = False):
+        send_image_wrapper(self.c_WhatsAppClientId, phone.encode(), image_path.encode(), caption.encode(), group)
+
+    def __init__(self, phone_number: str = "", media_path: str = "", user: Optional[str] = None, machine: str = "mac", browser: str = "safari", on_event = None, on_disconnect = None):
+        """
+        user : user phone number. in the whatsmeow golang are called client.
+        machine : os login info
+        browser : browser login info
+        import the compiled whatsmeow golang package, and setup basic client and database.
+        auto run based on any database (login and chat info database), hence a user phone number are declared.
+        if there is no user login assigned yet, assign a new client.
+        put the database in current file whereever this class instancess are imported. database/client.db
+        """
+        self.user 	 = user
+        self.user_name = None
+        self.machine = machine
+        self.browser = browser
+        self.wapi_functions = browser
+        self.connected = None
+
+        if media_path:
+            if not os.path.exists(media_path):
+                os.makedirs(media_path)
+            for subdir in ["images", "audios", "videos", "documents", "stickers"]:
+                full_media_path = media_path + "/" + subdir
+                if not os.path.exists(full_media_path):
+                    os.makedirs(full_media_path)
+
+        def on_event_json(s):
+            try:
+                s = s.decode()
+            except:
+                pass
+            try:
+                s = json.loads(s)
+            except:
+                pass
+            on_event(s)
+
+        CMPFUNC_NONE_STR = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
+        CMPFUNC_NONE = ctypes.CFUNCTYPE(None)
+
+        C_ON_EVENT = CMPFUNC_NONE_STR(on_event_json) if callable(on_event) else ctypes.cast(None, CMPFUNC_NONE_STR)
+        C_ON_DISCONNECT = CMPFUNC_NONE(on_disconnect) if callable(on_disconnect) else ctypes.cast(None, CMPFUNC_NONE)
+
+        self.c_WhatsAppClientId = new_whatsapp_client_wrapper(
+            phone_number.encode(),
+            media_path.encode(),
+            C_ON_DISCONNECT,
+            C_ON_EVENT
+        )
+
+        print("WhatsApp obj created, id: " + str(self.c_WhatsAppClientId))
+        if callable(on_event) or callable(on_disconnect):
+            self.handler_thread = threading.Thread(target=self.runMessageThread)
+            self.handler_thread.start()
 
 if __name__ == '__main__':
     client = WhatsApp()

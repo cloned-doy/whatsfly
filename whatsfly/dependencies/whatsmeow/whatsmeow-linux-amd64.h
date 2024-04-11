@@ -22,15 +22,6 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 #line 2 "main.go"
  #include "wapp.h"
 
-
-   #include <stdlib.h>
-
-   typedef void (*ptr_to_python_function) (char*);
-
-   static inline void call_c_func(ptr_to_python_function ptr, char* jsonStr) {
-     (ptr)(jsonStr);
-   }
-
 #line 1 "cgo-generated-wrapper"
 
 
@@ -87,13 +78,12 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern void Connect(char* c_number, char* c_media_path);
-extern void Disconnect();
-extern int SendMessage(char* number, char* msg);
-extern int SendGroupMessage(char* number, char* msg);
-extern int SendImage(char* number, char* imagePath, char* caption);
-extern int SendGroupImage(char* number, char* imagePath, char* caption);
-extern void HandlerThread(ptr_to_python_function fn);
+extern int NewWhatsAppClientWrapper(char* c_phone_number, char* c_media_path, ptr_to_pyfunc fn_disconnect_callback, ptr_to_pyfunc_str fn_event_callback);
+extern void ConnectWrapper(int id);
+extern void DisconnectWrapper(int id);
+extern void MessageThreadWrapper(int id);
+extern int SendMessageWrapper(int id, char* c_phone_number, char* c_message, _Bool c_is_group);
+extern int SendImageWrapper(int id, char* c_phone_number, char* c_image_path, char* c_caption, _Bool c_is_group);
 
 #ifdef __cplusplus
 }
