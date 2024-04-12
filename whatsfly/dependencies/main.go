@@ -154,6 +154,10 @@ func (w *WhatsAppClient) Connect() {
     fmt.Println("WpClient set to client")
 }
 
+func (w *WhatsAppClient) addEventToQueue(msg string){
+    w.eventQueue.Enqueue(msg)
+}
+
 func (w *WhatsAppClient) handler(rawEvt interface{}) {
     switch evt := rawEvt.(type) {
     case *events.AppStateSyncComplete:
@@ -162,7 +166,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
             if err != nil {
                 //log.Warnf("Failed to send available presence: %v", err)
             } else {
-                w.eventQueue.Enqueue("{\"eventType\":\"AppStateSyncComplete\",\"name\":\""+evt.Name+"\"}")
+                w.addEventToQueue("{\"eventType\":\"AppStateSyncComplete\",\"name\":\"" + string(evt.Name) + "\"}")
                 //log.Infof("Marked self as available")
             }
         }
@@ -176,7 +180,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
         if err != nil {
             //log.Warnf("Failed to send available presence: %v", err)
         } else {
-            w.eventQueue.Enqueue("{\"eventType\":\"Connected\"}")
+            w.addEventToQueue("{\"eventType\":\"Connected\"}")
             //log.Infof("Marked self as available")
         }
     case *events.PushNameSetting:
@@ -189,7 +193,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
         if err != nil {
             //log.Warnf("Failed to send available presence: %v", err)
         } else {
-            w.eventQueue.Enqueue("{\"eventType\":\"PushNameSetting\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+",\"action\":\""+(*evt.Action.Name)+"\",\"fromFullSync\":"+strconv.FormatBool(evt.FromFullSync)+"}")
+            w.addEventToQueue("{\"eventType\":\"PushNameSetting\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+",\"action\":\""+(*evt.Action.Name)+"\",\"fromFullSync\":"+strconv.FormatBool(evt.FromFullSync)+"}")
             //log.Infof("Marked self as available")
         }
     case *events.StreamReplaced:
@@ -281,7 +285,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
         var message_info string = string(m)
         json_str := "{\"eventType\":\"Message\",\"info\":"+info+",\"message\":"+message_info+"}"
         
-        w.eventQueue.Enqueue(json_str)
+        w.addEventToQueue(json_str)
     case *events.Receipt:
         if evt.Type == types.ReceiptTypeRead || evt.Type == types.ReceiptTypeReadSelf {
             json_str := "{\"eventType\":\"MessageRead\",\"messageIDs\":["
@@ -295,11 +299,11 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
             }
             json_str += "],\"sourceString\":\""+evt.SourceString()+"\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+"}"
 
-            w.eventQueue.Enqueue(json_str)
+            w.addEventToQueue(json_str)
             //log.Infof("%v was read by %s at %s", evt.MessageIDs, evt.SourceString(), evt.Timestamp)
         } else if evt.Type == types.ReceiptTypeDelivered {
             json_str := "{\"eventType\":\"MessageDelivered\",\"messageID\":\""+evt.MessageIDs[0]+"\",\"sourceString\":\""+evt.SourceString()+"\",\"timestamp\":"+strconv.FormatInt(evt.Timestamp.Unix(), 10)+"}"
-            w.eventQueue.Enqueue(json_str)
+            w.addEventToQueue(json_str)
             //log.Infof("%s was delivered to %s at %s", evt.MessageIDs[0], evt.SourceString(), evt.Timestamp)
         }
     case *events.Presence:
@@ -314,7 +318,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
             }
         }
         json_str += "}"
-        w.eventQueue.Enqueue(json_str)
+        w.addEventToQueue(json_str)
 
     case *events.HistorySync:
         id := atomic.AddInt32(&w.historySyncID, 1)
@@ -334,7 +338,7 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
         //log.Infof("Wrote history sync to %s", fileName)
         _ = file.Close()
 
-        w.eventQueue.Enqueue("{\"eventType\":\"HistorySync\",\"filename\":\""+fileName+"\"}")
+        w.addEventToQueue("{\"eventType\":\"HistorySync\",\"filename\":\""+fileName+"\"}")
     case *events.AppState:
         //log.Debugf("App state event: %+v / %+v", evt.Index, evt.SyncActionValue)
         var json_str string = "{\"eventType\":\"AppState\",\"index\":["
@@ -352,17 +356,17 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
         json_str += "],\"syncActionValue\":"+protobuf_json_str+"}"
         // json_str += "],\"syncActionValue\":"+evt.SyncActionValue.String()+"}"
 
-        w.eventQueue.Enqueue(json_str)
+        w.addEventToQueue(json_str)
         
     case *events.KeepAliveTimeout:
         //log.Debugf("Keepalive timeout event: %+v", evt)
         var json_str string = "{\"eventType\":\"KeepAliveTimeout\",\"errorCount\":"+strconv.FormatInt(int64(evt.ErrorCount), 10)+",\"lastSuccess\":"+strconv.FormatInt(evt.LastSuccess.Unix(), 10)+"}"
-        w.eventQueue.Enqueue(json_str)
+        w.addEventToQueue(json_str)
     case *events.KeepAliveRestored:
         //log.Debugf("Keepalive restored")
-        w.eventQueue.Enqueue("{\"eventType\":\"KeepAliveRestored\"}")
+        w.addEventToQueue("{\"eventType\":\"KeepAliveRestored\"}")
     case *events.Blocklist:
-        w.eventQueue.Enqueue("{\"eventType\":\"Blocklist\"}")
+        w.addEventToQueue("{\"eventType\":\"Blocklist\"}")
         //log.Infof("Blocklist event: %+v", evt)
     default:
         // fmt.Println("Missing event")
@@ -372,7 +376,6 @@ func (w *WhatsAppClient) handler(rawEvt interface{}) {
 }
 
 func (w *WhatsAppClient) MessageThread() {
-    fmt.Println("Message thread started!!")
     w.runMessageThread = true
     for {
         if w.wpClient!= nil {
@@ -381,7 +384,7 @@ func (w *WhatsAppClient) MessageThread() {
             if w.isLoggedIn != is_logged_in_now {
                 w.isLoggedIn = is_logged_in_now
 
-                w.eventQueue.Enqueue("{\"eventType\":\"isLoggedIn\",\"loggedIn\":"+strconv.FormatBool(w.isLoggedIn)+"}")
+                w.addEventToQueue("{\"eventType\":\"isLoggedIn\",\"loggedIn\":"+strconv.FormatBool(w.isLoggedIn)+"}")
                 if !w.isLoggedIn {
                     w.Disconnect(nil)
                 }
@@ -394,9 +397,10 @@ func (w *WhatsAppClient) MessageThread() {
             if w.fnEventCallback != nil {
                 var str_value = value.(string)
                 var cstr = C.CString(str_value)
-                
+
+                defer C.free(unsafe.Pointer(cstr))
                 C.call_c_func_str(w.fnEventCallback, cstr)
-                C.free(unsafe.Pointer(cstr))
+
             }
         }
 

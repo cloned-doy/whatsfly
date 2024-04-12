@@ -170,9 +170,7 @@ class WhatsApp(object):
         message_thread_wrapper(self.c_WhatsAppClientId)
 
     def sendMessage(self, phone: str, message: str, group: bool = False):
-        print("Python sendMessage START")
         ret = send_message_wrapper(self.c_WhatsAppClientId, phone.encode(), message.encode(), group)
-        print("Python sendMessage END")
     
     def sendImage(self, phone: str, image_path: str, caption: str = "", group: bool = False):
         send_image_wrapper(self.c_WhatsAppClientId, phone.encode(), image_path.encode(), caption.encode(), group)
@@ -216,20 +214,15 @@ class WhatsApp(object):
         CMPFUNC_NONE_STR = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
         CMPFUNC_NONE = ctypes.CFUNCTYPE(None)
 
-        C_ON_EVENT = CMPFUNC_NONE_STR(on_event_json) if callable(on_event) else ctypes.cast(None, CMPFUNC_NONE_STR)
-        C_ON_DISCONNECT = CMPFUNC_NONE(on_disconnect) if callable(on_disconnect) else ctypes.cast(None, CMPFUNC_NONE)
+        self.C_ON_EVENT = CMPFUNC_NONE_STR(on_event_json) if callable(on_event) else ctypes.cast(None, CMPFUNC_NONE_STR)
+        self.C_ON_DISCONNECT = CMPFUNC_NONE(on_disconnect) if callable(on_disconnect) else ctypes.cast(None, CMPFUNC_NONE)
 
         self.c_WhatsAppClientId = new_whatsapp_client_wrapper(
             phone_number.encode(),
             media_path.encode(),
-            C_ON_DISCONNECT,
-            C_ON_EVENT
+            self.C_ON_DISCONNECT,
+            self.C_ON_EVENT
         )
-
-        print("WhatsApp obj created, id: " + str(self.c_WhatsAppClientId))
-        if callable(on_event) or callable(on_disconnect):
-            self.handler_thread = threading.Thread(target=self.runMessageThread)
-            self.handler_thread.start()
 
 if __name__ == '__main__':
     client = WhatsApp()

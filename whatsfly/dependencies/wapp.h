@@ -10,10 +10,10 @@ static inline void call_c_func_str(ptr_to_pyfunc_str ptr, char* jsonStr) {
   (ptr)(jsonStr);
 }
 
-typedef void (*ptr_to_pyfunc) (char*);
+typedef void (*ptr_to_pyfunc) ();
 
 static inline void call_c_func(ptr_to_pyfunc ptr) {
-  (ptr)(NULL);
+  (ptr)();
 }
 
 #ifdef __cplusplus
