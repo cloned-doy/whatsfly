@@ -2,7 +2,7 @@
 import os
 import re
 from typing import Optional
-from .whatsmeow import new_whatsapp_client_wrapper, connect_wrapper, message_thread_wrapper, send_message_wrapper, send_image_wrapper
+from .whatsmeow import new_whatsapp_client_wrapper, connect_wrapper, disconnect_wrapper, message_thread_wrapper, send_message_wrapper, send_image_wrapper
 import ctypes
 import json
 import threading

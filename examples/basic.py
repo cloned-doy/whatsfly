@@ -1,4 +1,5 @@
 from whatsfly import WhatsApp
+import time
 
 """
 
@@ -6,20 +7,29 @@ basic usages
 
 """
 
-whatsapp = WhatsApp()
-
 def my_event_callback(event_data):
-    ''' this is an example to listen to incoming messages. '''
+    ''' 
+    simple event callback to listen to incoming event/messages. 
+    whenever this function is called, it will retrieve the current incoming event or messages.
+    '''
     print("Received event data:", event_data)
 
-whatsapp = WhatsApp(event_callback=my_event_callback)
+def listening_message(minutes):
+    """ Stream messages for 'minutes' duration"""
+    end_time = time.time() + minutes * 60  
+    while time.time() < end_time:
+        my_event_callback()
+  
+if __name__ == "__main__":
 
-phone = "6283139750000" # make sure to attach country code + phone number
-message = "Hello World!"
+    phone = "6283139750000" # make sure to attach country code + phone number
+    message = "Hello World!"
 
-print(f"send message : {send_msg}")
-response = whatsapp.send_message(phone=phone, message=message)
+    whatsapp = WhatsApp(event_callback=my_event_callback)
 
-# listening to incoming messages
-while True:
-    my_event_callback()
+
+    message_sent = whatsapp.send_message(phone=phone, message=message)
+    
+    listening_message(time=5)
+
+    whatsapp.disconnect()
