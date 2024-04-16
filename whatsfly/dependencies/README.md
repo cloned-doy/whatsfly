@@ -11,8 +11,10 @@ Simply take a look to the `build.sh` file for how each code compiled for each ma
 
 3. Supposed you using an ubuntu machine and want to compile for all machines:
      ```
-     sudo apt-get install gcc-multilib gcc-aarch64-linux-gnu gcc-mingw-w64-x86-64 libc6-dev linux-libc-dev:i386 gcc-aarch64-linux-gnu 
+     sudo apt-get install gcc-multilib linux-libc-dev gcc-mingw-w64-x86-64 libc6-dev 
      ```
+     *when gcc-multilib is installed, compiling for linux ARM need to do a separated install: gcc-aarch64-linux-gnu*
+     *consider to install linux-libc-dev:i386 for compiling 32bit machine*
 
 4. Once the build tools are installed, navigate to the repository directory and execute the `./build.sh all` script.
 
